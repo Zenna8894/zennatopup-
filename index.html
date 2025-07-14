@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZuraaQT TopUp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007bff; /* Biru terang */
+            --secondary-color: #6c757d; /* Abu-abu */
+            --background-color: #1a1a2e; /* Biru gelap keunguan */
+            --card-background: #2a2a4a; /* Sedikit lebih terang dari background */
+            --text-color: #e0e0e0; /* Abu-abu terang */
+            --heading-color: #ffffff; /* Putih */
+            --border-color: #444466; /* Garis abu-abu keunguan */
+            --hover-color: #0056b3; /* Biru lebih gelap untuk hover */
+            --input-bg: #3a3a5a; /* Latar belakang input */
+            --input-border: #555588; /* Border input */
+            --modal-bg: #3a3a5a; /* Latar belakang modal */
+            --modal-backdrop: rgba(0, 0, 0, 0.7); /* Backdrop modal */
+            --success-color: #28a745; /* Hijau untuk sukses */
+            --error-color: #dc3545; /* Merah untuk error */
+            --warning-color: #ffc107; /* Kuning untuk warning */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        header {
+            background-color: var(--card-background);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--heading-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .hamburger-menu {
+            display: none; /* Hidden by default on desktop */
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .desktop-options {
+            position: relative; /* Penting untuk positioning dropdown */
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 1.5rem;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%; /* Di bawah ikon */
+            right: 0;
+            background-color: var(--card-background);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            z-index: 1001;
+            min-width: 180px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-weight: 400;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--hover-color);
+            color: var(--heading-color);
+        }
+
+        .dropdown-menu .dark-mode-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu .dark-mode-toggle span {
+            font-weight: 400;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Mobile Nav Menu */
+        .mobile-nav-menu {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            background-color: var(--card-background);
+            position: absolute;
+            top: 70px; /* Di bawah header */
+            left: 0;
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            z-index: 999;
+            padding: 20px 0;
+        }
+
+        .mobile-nav-menu.show {
+            display: flex;
+        }
+
+        .mobile-nav-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 15px 20px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mobile-nav-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-menu a:hover {
+            background-color: var(--hover-color);
+            color: var(--heading-color);
+        }
+        
+        .mobile-nav-menu .dark-mode-toggle-mobile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://via.placeholder.com/1500x500') no-repeat center center/cover;
+            padding: 80px 0;
+            text-align: center;
+            color: var(--heading-color);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--hover-color);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--heading-color);
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 10px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        .game-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .game-card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .game-card.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.6);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .game-card h3 {
+            font-size: 1.2rem;
+            color: var(--heading-color);
+            margin: 15px 0;
+            padding: 0 10px;
+        }
+
+        .form-section {
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 60px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="number"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .input-description {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            margin-top: 5px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .product-item {
+            background-color: var(--input-bg);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .product-item.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+            background-color: #333366; /* Slightly darker when selected */
+        }
+
+        .product-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .product-item h4 {
+            margin: 0 0 5px 0;
+            color: var(--heading-color);
+            font-size: 1.1rem;
+        }
+
+        .product-item p {
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .payment-method {
+            background-color: var(--input-bg);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+            background-color: #333366; /* Slightly darker when selected */
+        }
+
+        .payment-method:hover {
+            transform: translateY(-3px);
+        }
+
+        .payment-method img {
+            max-width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .payment-method p {
+            margin: 0;
+            color: var(--heading-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .buy-button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-background);
+            color: var(--text-color);
+            padding: 40px 0;
+            margin-top: auto; /* Push footer to the bottom */
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section h4 {
+            color: var(--heading-color);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .footer-section h4::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-color);
+            margin-top: 8px;
+            border-radius: 1.5px;
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icons a {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: var(--modal-backdrop); /* Black w/ opacity */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--modal-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-button {
+            color: var(--text-color);
+            font-size: 2rem;
+            font-weight: bold;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            color: var(--heading-color);
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .modal-content p {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .modal-content p strong {
+            color: var(--primary-color);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .modal-buttons .btn {
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .modal-buttons .btn-cancel {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .modal-buttons .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        .modal-buttons .btn-confirm {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .modal-buttons .btn-confirm:hover {
+            background-color: #218838;
+        }
+
+        /* Alert Message */
+        .alert-message {
+            display: none;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .alert-message.show {
+            display: block;
+        }
+
+        .alert-message.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .alert-message.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 15px;
+            }
+
+            .nav-links {
+                display: none; /* Hide desktop nav links */
+            }
+
+            .hamburger-menu {
+                display: block; /* Show hamburger on mobile */
+            }
+
+            .desktop-options {
+                display: none; /* Hide desktop dots on mobile */
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .game-cards {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .game-card h3 {
+                font-size: 1rem;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+
+            .product-grid,
+            .payment-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .product-item h4 {
+                font-size: 1rem;
+            }
+
+            .product-item p {
+                font-size: 0.9rem;
+            }
+
+            .payment-method img {
+                max-width: 60px;
+            }
+
+            .payment-method p {
+                font-size: 0.85rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-section h4::after {
+                margin: 8px auto 0 auto;
+            }
+
+            .social-icons {
+                justify-content: center;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 25px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-cards {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            .product-grid,
+            .payment-grid {
+                grid-template-columns: 1fr; /* Stack on very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar container">
+            <a href="#" class="logo">
+                <img src="https://via.placeholder.com/40x40?text=ZQT" alt="Logo ZuraaQT">
+                ZuraaQT TopUp
+            </a>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Top Up</a>
+                <a href="#">Promo</a>
+                <a href="#">Bantuan</a>
+            </nav>
+            <div class="desktop-options" onclick="toggleDropdown()">
+                <i class="fas fa-ellipsis-v"></i>
+                <div class="dropdown-menu" id="desktopDropdown">
+                    <div class="dark-mode-toggle">
+                        <span>Dark Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggleDesktop">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <a href="https://wa.me/6281234567890" target="_blank">Customer Service</a>
+                </div>
+            </div>
+            <div class="hamburger-menu" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+        <nav class="mobile-nav-menu" id="mobileNavMenu">
+            <a href="#">Home</a>
+            <a href="#">Top Up</a>
+            <a href="#">Promo</a>
+            <a href="#">Bantuan</a>
+            <div class="dark-mode-toggle-mobile">
+                <span>Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggleMobile">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <a href="https://wa.me/6281234567890" target="_blank">Customer Service</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <h1>Top Up Game Instan & Aman</h1>
+            <p>Dapatkan diamond, coin, dan item game favoritmu dengan harga terbaik dan proses super cepat!</p>
+            <a href="#top-up-section" class="btn-primary">Mulai Top Up Sekarang</a>
+        </section>
+
+        <section class="container" id="top-up-section">
+            <h2 class="section-title">Pilih Game Kamu</h2>
+            <div class="game-cards">
+                <div class="game-card" data-game="mobile-legends">
+                    <img src="https://via.placeholder.com/300x150?text=Mobile+Legends" alt="Mobile Legends">
+                    <h3>Mobile Legends</h3>
+                </div>
+                <div class="game-card" data-game="free-fire">
+                    <img src="https://via.placeholder.com/300x150?text=Free+Fire" alt="Free Fire">
+                    <h3>Free Fire</h3>
+                </div>
+                <div class="game-card" data-game="genshin-impact">
+                    <img src="https://via.placeholder.com/300x150?text=Genshin+Impact" alt="Genshin Impact">
+                    <h3>Genshin Impact</h3>
+                </div>
+                <div class="game-card" data-game="valorant">
+                    <img src="https://via.placeholder.com/300x150?text=Valorant" alt="Valorant" style="object-position: top;">
+                    <h3>Valorant</h3>
+                </div>
+                <div class="game-card" data-game="pubg-mobile">
+                    <img src="https://via.placeholder.com/300x150?text=PUBG+Mobile" alt="PUBG Mobile">
+                    <h3>PUBG Mobile</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="container form-section" id="top-up-form" style="display: none;">
+            <h2 class="section-title">Lengkapi Data & Pilih Produk</h2>
+            <div class="alert-message" id="alertMessage"></div>
+
+            <div class="form-group" id="player-id-group">
+                <label for="playerID">Masukkan User ID Kamu</label>
+                <input type="text" id="playerID" placeholder="Contoh: 12345678">
+                <p class="input-description">Temukan User ID kamu di profil game.</p>
+            </div>
+
+            <div class="form-group" id="server-id-group" style="display: none;">
+                <label for="serverID">Masukkan Server ID Kamu</label>
+                <input type="text" id="serverID" placeholder="Contoh: 1234">
+                <p class="input-description">Temukan Server ID kamu di samping User ID (khusus MLBB).</p>
+            </div>
+
+            <div class="form-group">
+                <label>Pilih Nominal Top Up</label>
+                <div class="product-grid" id="productGrid">
+                    </div>
+            </div>
+
+            <div class="form-group">
+                <label>Pilih Metode Pembayaran</label>
+                <div class="payment-grid" id="paymentGrid">
+                    <div class="payment-method" data-method="dana">
+                        <img src="https://via.placeholder.com/80x40?text=DANA" alt="DANA">
+                        <p>DANA</p>
+                    </div>
+                    <div class="payment-method" data-method="ovo">
+                        <img src="https://via.placeholder.com/80x40?text=OVO" alt="OVO">
+                        <p>OVO</p>
+                    </div>
+                    <div class="payment-method" data-method="gopay">
+                        <img src="https://via.placeholder.com/80x40?text=GOPAY" alt="GOPAY">
+                        <p>GOPAY</p>
+                    </div>
+                    <div class="payment-method" data-method="qris">
+                        <img src="https://via.placeholder.com/80x40?text=QRIS" alt="QRIS">
+                        <p>QRIS</p>
+                    </div>
+                    <div class="payment-method" data-method="bank-transfer">
+                        <img src="https://via.placeholder.com/80x40?text=Bank" alt="Bank Transfer">
+                        <p>Bank Transfer</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buy-button-container">
+                <button class="btn-primary" id="buyButton">Beli Sekarang</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-section about">
+                <h4>Tentang Kami</h4>
+                <p>ZuraaQT TopUp menyediakan layanan top up game yang cepat, aman, dan terpercaya. Kami berkomitmen untuk memberikan pengalaman terbaik bagi para gamer.</p>
+            </div>
+            <div class="footer-section links">
+                <h4>Link Cepat</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Top Up</a></li>
+                    <li><a href="#">Promo</a></li>
+                    <li><a href="#">Bantuan</a></li>
+                    <li><a href="#">Kebijakan Privasi</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h4>Hubungi Kami</h4>
+                <p>Email: support@zuraaqt.com</p>
+                <p>WhatsApp: <a href="https://wa.me/6281234567890" target="_blank">+62 812-3456-7890</a></p>
+                <p>Instagram: <a href="https://instagram.com/zuraaqtt_12" target="_blank">@zuraaqtt_12</a></p>
+                <div class="social-icons">
+                    <a href="https://instagram.com/zuraaqtt_12" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom container">
+            &copy; 2024 ZuraaQT TopUp. All rights reserved.
+        </div>
+    </footer>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('paymentModal')">&times;</span>
+            <h2>Konfirmasi Pembayaran</h2>
+            <p>Game: <strong id="modalGameName"></strong></p>
+            <p>User ID: <strong id="modalUserID"></strong></p>
+            <p id="modalServerIDRow" style="display: none;">Server ID: <strong id="modalServerID"></strong></p>
+            <p>Produk: <strong id="modalProductName"></strong></p>
+            <p>Harga: <strong id="modalProductPrice"></strong></p>
+            <p>Metode Pembayaran: <strong id="modalPaymentMethod"></strong></p>
+            <p>Apakah Anda yakin ingin melanjutkan pembayaran?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" onclick="closeModal('paymentModal')">Batal</button>
+                <button class="btn btn-confirm" onclick="processPayment()">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('statusModal')">&times;</span>
+            <h2 id="statusModalTitle"></h2>
+            <p id="statusModalMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal('statusModal'); resetForm();">Oke</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggleDesktop = document.getElementById('darkModeToggleDesktop');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+
+        function setDarkMode(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                document.documentElement.style.setProperty('--primary-color', '#8b5cf6'); /* Ungu */
+                document.documentElement.style.setProperty('--secondary-color', '#9ca3af'); /* Abu-abu terang */
+                document.documentElement.style.setProperty('--background-color', '#1f1f3a'); /* Ungu gelap */
+                document.documentElement.style.setProperty('--card-background', '#2c2c5a'); /* Ungu sedikit terang */
+                document.documentElement.style.setProperty('--text-color', '#d1d5db'); /* Abu-abu kebiruan */
+                document.documentElement.style.setProperty('--heading-color', '#ffffff'); /* Putih */
+                document.documentElement.style.setProperty('--border-color', '#4a4a7a'); /* Ungu kebiruan */
+                document.documentElement.style.setProperty('--hover-color', '#7c3aed'); /* Ungu lebih gelap */
+                document.documentElement.style.setProperty('--input-bg', '#3a3a6a'); /* Ungu input */
+                document.documentElement.style.setProperty('--input-border', '#6a6a9a'); /* Border input ungu */
+                document.documentElement.style.setProperty('--modal-bg', '#3a3a6a'); /* Latar belakang modal ungu */
+                document.documentElement.style.setProperty('--success-color', '#10b981'); /* Hijau tosca */
+                document.documentElement.style.setProperty('--error-color', '#ef4444'); /* Merah */
+                document.documentElement.style.setProperty('--warning-color', '#fcd34d'); /* Kuning */
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.documentElement.style.setProperty('--primary-color', '#007bff'); /* Biru terang */
+                document.documentElement.style.setProperty('--secondary-color', '#6c757d'); /* Abu-abu */
+                document.documentElement.style.setProperty('--background-color', '#1a1a2e'); /* Biru gelap keunguan */
+                document.documentElement.style.setProperty('--card-background', '#2a2a4a'); /* Sedikit lebih terang dari background */
+                document.documentElement.style.setProperty('--text-color', '#e0e0e0'); /* Abu-abu terang */
+                document.documentElement.style.setProperty('--heading-color', '#ffffff'); /* Putih */
+                document.documentElement.style.setProperty('--border-color', '#444466'); /* Garis abu-abu keunguan */
+                document.documentElement.style.setProperty('--hover-color', '#0056b3'); /* Biru lebih gelap untuk hover */
+                document.documentElement.style.setProperty('--input-bg', '#3a3a5a'); /* Latar belakang input */
+                document.documentElement.style.setProperty('--input-border', '#555588'); /* Border input */
+                document.documentElement.style.setProperty('--modal-bg', '#3a3a5a'); /* Latar belakang modal */
+                document.documentElement.style.setProperty('--success-color', '#28a745'); /* Hijau untuk sukses */
+                document.documentElement.style.setProperty('--error-color', '#dc3545'); /* Merah untuk error */
+                document.documentElement.style.setProperty('--warning-color', '#ffc107'); /* Kuning untuk warning */
+            }
+            localStorage.setItem('darkMode', isDark);
+            darkModeToggleDesktop.checked = isDark;
+            darkModeToggleMobile.checked = isDark;
+        }
+
+        // Load dark mode preference from localStorage
+        const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const savedDarkMode = localStorage.getItem('darkMode');
+
+        if (savedDarkMode === 'true') {
+            setDarkMode(true);
+        } else if (savedDarkMode === 'false') {
+            setDarkMode(false);
+        } else {
+            setDarkMode(prefersDarkMode);
+        }
+
+        darkModeToggleDesktop.addEventListener('change', (e) => setDarkMode(e.target.checked));
+        darkModeToggleMobile.addEventListener('change', (e) => setDarkMode(e.target.checked));
+
+        // Hamburger Menu & Desktop Dropdown
+        const mobileNavMenu = document.getElementById('mobileNavMenu');
+        const desktopDropdown = document.getElementById('desktopDropdown');
+
+        function toggleMobileMenu() {
+            mobileNavMenu.classList.toggle('show');
+            desktopDropdown.classList.remove('show'); // Close desktop dropdown if open
+        }
+
+        function toggleDropdown() {
+            desktopDropdown.classList.toggle('show');
+            mobileNavMenu.classList.remove('show'); // Close mobile menu if open
+        }
+
+        // Close dropdown/mobile menu if clicked outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.desktop-options') && !event.target.closest('.hamburger-menu')) {
+                desktopDropdown.classList.remove('show');
+                mobileNavMenu.classList.remove('show');
+            }
+        });
+
+
+        // Game Selection Logic
+        const gameCards = document.querySelectorAll('.game-card');
+        const topUpForm = document.getElementById('top-up-form');
+        const playerIDInput = document.getElementById('playerID');
+        const serverIDGroup = document.getElementById('server-id-group');
+        const serverIDInput = document.getElementById('serverID');
+        const productGrid = document.getElementById('productGrid');
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        const buyButton = document.getElementById('buyButton');
+        const alertMessage = document.getElementById('alertMessage');
+
+        let selectedGame = null;
+        let selectedProduct = null;
+        let selectedPaymentMethod = null;
+
+        const gameProducts = {
+            'mobile-legends': [
+                { id: 'ml_5', name: '5 Diamond', price: 'Rp 1.500' },
+                { id: 'ml_10', name: '10 Diamond', price: 'Rp 3.000' },
+                { id: 'ml_50', name: '50 Diamond', price: 'Rp 15.000' },
+                { id: 'ml_100', name: '100 Diamond', price: 'Rp 30.000' },
+                { id: 'ml_250', name: '250 Diamond', price: 'Rp 75.000' },
+                { id: 'ml_500', name: '500 Diamond', price: 'Rp 150.000' },
+                { id: 'ml_1000', name: '1000 Diamond', price: 'Rp 300.000' },
+            ],
+            'free-fire': [
+                { id: 'ff_100', name: '100 Diamond', price: 'Rp 10.000' },
+                { id: 'ff_200', name: '200 Diamond', price: 'Rp 20.000' },
+                { id: 'ff_500', name: '500 Diamond', price: 'Rp 50.000' },
+                { id: 'ff_1000', name: '1000 Diamond', price: 'Rp 100.000' },
+            ],
+            'genshin-impact': [
+                { id: 'gi_60', name: '60 Genesis Crystal', price: 'Rp 16.000' },
+                { id: 'gi_300', name: '300 Genesis Crystal', price: 'Rp 79.000' },
+                { id: 'gi_980', name: '980 Genesis Crystal', price: 'Rp 249.000' },
+            ],
+            'valorant': [
+                { id: 'val_125', name: '125 VP', price: 'Rp 15.000' },
+                { id: 'val_420', name: '420 VP', price: 'Rp 50.000' },
+                { id: 'val_700', name: '700 VP', price: 'Rp 80.000' },
+            ],
+            'pubg-mobile': [
+                { id: 'pubg_60', name: '60 UC', price: 'Rp 15.000' },
+                { id: 'pubg_300', name: '300 UC', price: 'Rp 75.000' },
+                { id: 'pubg_600', name: '600 UC', price: 'Rp 150.000' },
+            ]
+        };
+
+        gameCards.forEach(card => {
+            card.addEventListener('click', () => {
+                gameCards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedGame = card.dataset.game;
+                displayProducts(selectedGame);
+                topUpForm.style.display = 'block';
+                
+                // Show/hide Server ID input based on game
+                if (selectedGame === 'mobile-legends') {
+                    serverIDGroup.style.display = 'block';
+                } else {
+                    serverIDGroup.style.display = 'none';
+                    serverIDInput.value = ''; // Clear server ID if not MLBB
+                }
+
+                // Scroll to form
+                topUpForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        function displayProducts(game) {
+            productGrid.innerHTML = ''; // Clear previous products
+            selectedProduct = null; // Reset selected product
+            const products = gameProducts[game];
+            if (products) {
+                products.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.classList.add('product-item');
+                    productItem.dataset.id = product.id;
+                    productItem.dataset.name = product.name;
+                    productItem.dataset.price = product.price;
+                    productItem.innerHTML = `
+                        <h4>${product.name}</h4>
+                        <p>${product.price}</p>
+                    `;
+                    productItem.addEventListener('click', () => {
+                        document.querySelectorAll('.product-item').forEach(item => item.classList.remove('selected'));
+                        productItem.classList.add('selected');
+                        selectedProduct = product;
+                        hideAlert();
+                    });
+                    productGrid.appendChild(productItem);
+                });
+            }
+        }
+
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', () => {
+                paymentMethods.forEach(m => m.classList.remove('selected'));
+                method.classList.add('selected');
+                selectedPaymentMethod = {
+                    id: method.dataset.method,
+                    name: method.querySelector('p').textContent
+                };
+                hideAlert();
+            });
+        });
+
+        // Input validation for User ID and Server ID (only numbers)
+        playerIDInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Only allow numbers
+        });
+
+        serverIDInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Only allow numbers
+        });
+
+        buyButton.addEventListener('click', () => {
+            const playerID = playerIDInput.value.trim();
+            const serverID = serverIDInput.value.trim(); // Only relevant for MLBB
+
+            if (!selectedGame) {
+                showAlert('Pilih game terlebih dahulu!', 'error');
+                return;
+            }
+            if (!playerID) {
+                showAlert('User ID tidak boleh kosong!', 'error');
+                return;
+            }
+            if (selectedGame === 'mobile-legends' && !serverID) {
+                showAlert('Server ID tidak boleh kosong untuk Mobile Legends!', 'error');
+                return;
+            }
+            if (!selectedProduct) {
+                showAlert('Pilih nominal top up!', 'error');
+                return;
+            }
+            if (!selectedPaymentMethod) {
+                showAlert('Pilih metode pembayaran!', 'error');
+                return;
+            }
+
+            // Populate modal with selected data
+            document.getElementById('modalGameName').textContent = document.querySelector(`.game-card[data-game="${selectedGame}"] h3`).textContent;
+            document.getElementById('modalUserID').textContent = playerID;
+            if (selectedGame === 'mobile-legends') {
+                document.getElementById('modalServerIDRow').style.display = 'block';
+                document.getElementById('modalServerID').textContent = serverID;
+            } else {
+                document.getElementById('modalServerIDRow').style.display = 'none';
+                document.getElementById('modalServerID').textContent = ''; // Clear it
+            }
+            document.getElementById('modalProductName').textContent = selectedProduct.name;
+            document.getElementById('modalProductPrice').textContent = selectedProduct.price;
+            document.getElementById('modalPaymentMethod').textContent = selectedPaymentMethod.name;
+
+            openModal('paymentModal');
+        });
+
+        function processPayment() {
+            closeModal('paymentModal');
+            // Simulate payment processing
+            const isSuccess = Math.random() > 0.3; // 70% success rate for demo
+
+            if (isSuccess) {
+                document.getElementById('statusModalTitle').textContent = 'Pembayaran Berhasil!';
+                document.getElementById('statusModalTitle').style.color = 'var(--success-color)';
+                document.getElementById('statusModalMessage').innerHTML = `
+                    Terima kasih! Pembayaran Anda untuk <strong>${selectedProduct.name}</strong> telah berhasil diproses.
+                    Item akan segera masuk ke akun game Anda.
+                `;
+            } else {
+                document.getElementById('statusModalTitle').textContent = 'Pembayaran Gagal!';
+                document.getElementById('statusModalTitle').style.color = 'var(--error-color)';
+                document.getElementById('statusModalMessage').innerHTML = `
+                    Maaf, pembayaran Anda gagal. Silakan coba lagi atau pilih metode pembayaran lain.
+                    Jika masalah berlanjut, hubungi Customer Service kami.
+                `;
+            }
+            openModal('statusModal');
+        }
+
+        function resetForm() {
+            // Reset game selection
+            gameCards.forEach(c => c.classList.remove('selected'));
+            selectedGame = null;
+
+            // Hide form
+            topUpForm.style.display = 'none';
+
+            // Clear inputs
+            playerIDInput.value = '';
+            serverIDInput.value = '';
+            serverIDGroup.style.display = 'none';
+
+            // Clear product selection
+            productGrid.innerHTML = '';
+            selectedProduct = null;
+
+            // Clear payment method selection
+            paymentMethods.forEach(m => m.classList.remove('selected'));
+            selectedPaymentMethod = null;
+
+            hideAlert();
+        }
+
+        function showAlert(message, type) {
+            alertMessage.textContent = message;
+            alertMessage.className = `alert-message show ${type}`; // Reset classes and add new ones
+            alertMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function hideAlert() {
+            alertMessage.classList.remove('show', 'success', 'error');
+            alertMessage.textContent = '';
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close modal if clicked outside content
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+
+    </script>
+</body>
+</html>
